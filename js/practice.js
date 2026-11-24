@@ -39,7 +39,7 @@ Object.assign(Pages, {
     const lb = leaderboard('quiz');
     return pageHead('Quizzes', 'Daily, chapter-wise and topic-wise MCQ practice with instant scoring and detailed explanations.', [['Quizzes']]) + `<div class="container page-body">
       <div class="toolbar"><div class="input-ic">${icon('search', 17)}<input class="input" id="f-qz-q" data-filter="quizzes.q" placeholder="Search quizzes…" value="${h(f.q)}"></div>
-      <select class="select" data-filter="quizzes.subject">${subjects.map(s => `<option ${f.subject === s ? 'selected' : ''}>${h(s)}</option>`).join('')}</select>
+      ${subjects.length > 2 ? `<select class="select" data-filter="quizzes.subject">${subjects.map(s => `<option ${f.subject === s ? 'selected' : ''}>${h(s)}</option>`).join('')}</select>` : ''}
       <select class="select" data-filter="quizzes.diff">${['All', 'Easy', 'Moderate', 'Difficult'].map(s => `<option value="${s}" ${f.diff === s ? 'selected' : ''}>${s === 'All' ? 'All levels' : s}</option>`).join('')}</select></div>
       <div class="chips mb24">${['All', 'Daily', 'Chapter-wise', 'Topic-wise'].map(k => `<button class="chip ${f.kind === k ? 'active' : ''}" data-act="filter" data-k="quizzes.kind" data-v="${k}">${k}</button>`).join('')}</div>
       <div class="lec-layout"><div>${!ready('quizzes') ? skeletonGrid(4, 'g2') : list.length ? `<div class="grid g2">${list.map(quizCard).join('')}</div>` : emptyState('quiz', 'No quizzes found', 'Try another filter.', `<button class="btn btn-ghost" data-act="clear-filters" data-k="quizzes">Clear filters</button>`)}</div>

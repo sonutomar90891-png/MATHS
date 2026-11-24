@@ -194,7 +194,7 @@ body.drawer-open .drawer{transform:none}
 .card-pad{padding:22px}
 .card-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid var(--border)}
 .card-hd h3{font-size:16.5px;font-weight:700}
-.thumb{position:relative;aspect-ratio:16/9;border-radius:var(--radius-lg) var(--radius-lg) 0 0;overflow:hidden;background:var(--navy-800)}
+.thumb{display:block;position:relative;aspect-ratio:16/9;border-radius:var(--radius-lg) var(--radius-lg) 0 0;overflow:hidden;background:var(--navy-800)}
 .thumb svg,.thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .thumb .tag{position:absolute;top:12px;left:12px}
 .thumb .dur{position:absolute;bottom:10px;right:10px;background:rgba(5,12,31,.78);color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:7px;backdrop-filter:blur(4px)}

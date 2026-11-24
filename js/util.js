@@ -120,6 +120,7 @@ const SUBJ = {
 function subj(s) { return SUBJ[s] || { c1: '#2952E3', c2: '#13285A', icon: 'star' }; }
 function subjBadge(s) { const map = { Physics: 'b-royal', Chemistry: 'b-green', Mathematics: 'b-violet', Biology: 'b-green', English: 'b-red' }; return `<span class="badge ${map[s] || 'b-gold'}">${h(s || 'General')}</span>`; }
 function glyph(kind) {
+  if (String(kind).startsWith('txt:')) { const g = kind.slice(4); return `<text x="0" y="${g.length > 2 ? 14 : 24}" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="${g.length > 3 ? 44 : g.length > 2 ? 52 : 80}" fill="#fff" font-weight="700">${h(g)}</text>`; }
   switch (kind) {
     case 'atom': return '<g fill="none" stroke="#fff" stroke-width="3" opacity=".95"><ellipse cx="0" cy="0" rx="46" ry="17"/><ellipse cx="0" cy="0" rx="46" ry="17" transform="rotate(60)"/><ellipse cx="0" cy="0" rx="46" ry="17" transform="rotate(-60)"/></g><circle r="7" fill="#E2C47A"/>';
     case 'flask': return '<g fill="none" stroke="#fff" stroke-width="3.5" stroke-linejoin="round"><path d="M-12-42h24M-8-42v26l-26 44a6 6 0 0 0 5 9h58a6 6 0 0 0 5-9L8-16v-26"/></g><path d="M-24 18h48l8 13a4 4 0 0 1-3 6h-58a4 4 0 0 1-3-6z" fill="#E2C47A" opacity=".9"/><circle cx="-6" cy="4" r="4" fill="#fff" opacity=".7"/><circle cx="6" cy="-6" r="3" fill="#fff" opacity=".5"/>';
@@ -129,9 +130,17 @@ function glyph(kind) {
     default: return '<path d="m0-40 11 24 26 3-19 18 5 26L0 18l-23 13 5-26-19-18 26-3z" fill="#E2C47A"/>';
   }
 }
+const MATH_VARIANTS = [
+  [/integra|calculus/i, '#7A5AF8', '#1E1650', '∫'], [/deriv|limit|differen/i, '#2952E3', '#0B1B3F', 'dy/dx'],
+  [/trig/i, '#0EA5A4', '#0B3B4F', 'θ'], [/matri|determin/i, '#E0475A', '#4A0F1C', '[ ]'],
+  [/probab|statist/i, '#14A06B', '#0B3B2B', 'P(A)'], [/coordinat|line|circle/i, '#D97706', '#3A2208', 'y=mx'],
+  [/quadratic|algebra/i, '#2952E3', '#13285A', 'x²'], [/sequence|series|progression/i, '#7A5AF8', '#13285A', '∑'],
+  [/permutation|combination|counting/i, '#0EA5A4', '#13285A', 'ⁿCᵣ'],
+];
 function thumbSVG(subject, title = '', label = '') {
-  const s = subj(subject); const gid = 'g' + Math.random().toString(36).slice(2, 7);
-  const t = h(String(title).slice(0, 38));
+  let s = subj(subject);
+  if (subject === 'Mathematics') { const k = String(label) + ' ' + String(title); const v = MATH_VARIANTS.find(x => x[0].test(k)); if (v) s = { c1: v[1], c2: v[2], icon: 'txt:' + v[3] }; } const gid = 'g' + Math.random().toString(36).slice(2, 7);
+  const tt = String(title); const t = h(tt.length > 30 ? tt.slice(0, 28).trim() + '…' : tt);
   return `<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${s.c1}"/><stop offset="1" stop-color="${s.c2}"/></linearGradient><pattern id="${gid}p" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0v22" fill="none" stroke="#fff" stroke-opacity=".06"/></pattern></defs><rect width="320" height="180" fill="url(#${gid})"/><rect width="320" height="180" fill="url(#${gid}p)"/><circle cx="280" cy="20" r="70" fill="#fff" opacity=".06"/><circle cx="250" cy="170" r="40" fill="#C9A24A" opacity=".18"/><g transform="translate(240 86) scale(.9)">${glyph(s.icon)}</g>${label ? `<text x="20" y="34" font-family="Inter,sans-serif" font-size="11" font-weight="700" letter-spacing="1.5" fill="#E2C47A">${h(String(label).toUpperCase().slice(0, 28))}</text>` : ''}<text x="20" y="${label ? 150 : 150}" font-family="Manrope,Inter,sans-serif" font-size="17" font-weight="800" fill="#fff">${t}</text></svg>`;
 }
 function docIcon(type) {

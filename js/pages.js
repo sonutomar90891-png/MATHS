@@ -107,7 +107,7 @@ const Pages = {
     return pageHead('Courses', 'Structured, chapter-wise programs combining lectures, notes and practice.', [['Courses']]) + `<div class="container page-body">
       <div class="toolbar"><div class="input-ic">${icon('search', 17)}<input class="input" id="f-courses-q" data-filter="courses.q" placeholder="Search courses…" value="${h(f.q)}"></div>
       <select class="select" data-filter="courses.cls">${classes.map(c => `<option ${f.cls === c ? 'selected' : ''}>${h(c)}</option>`).join('')}</select></div>
-      <div class="chips scroll mb24">${subjects.map(s => `<button class="chip ${f.subject === s ? 'active' : ''}" data-act="filter" data-k="courses.subject" data-v="${h(s)}">${h(s)}</button>`).join('')}</div>
+      ${subjects.length > 2 ? `<div class="chips scroll mb24">${subjects.map(s => `<button class="chip ${f.subject === s ? 'active' : ''}" data-act="filter" data-k="courses.subject" data-v="${h(s)}">${h(s)}</button>`).join('')}</div>` : ''}
       ${!ready('courses') ? skeletonGrid(6) : list.length ? `<div class="grid g3">${list.map(courseCard).join('')}</div>` : emptyState('book', 'No courses match', 'Try clearing the filters or searching for a different subject.', `<button class="btn btn-ghost" data-act="clear-filters" data-k="courses">Clear filters</button>`)}</div>`;
   },
 
@@ -154,7 +154,7 @@ const Pages = {
     if (f.view === 'todo') list = list.filter(l => !st.completed.includes(l.id));
     list.sort(byDate);
     return pageHead('Video Lectures', 'Organised by subject, chapter and topic. Mark lectures complete and save favourites as you go.', [['Video Lectures']]) + `<div class="container page-body"><div class="layout-side">
-      <aside class="sidebar"><div class="side-grp"><h6>Subject</h6>${subjects.map(s => `<button class="side-link ${f.subject === s ? 'active' : ''}" data-act="filter" data-k="lectures.subject" data-v="${h(s)}" data-reset="lectures.chapter">${h(s)}<small>${s === 'All' ? S.data.lectures.length : S.data.lectures.filter(l => l.subject === s).length}</small></button>`).join('')}</div>
+      <aside class="sidebar">${subjects.length > 2 ? `<div class="side-grp"><h6>Subject</h6>${subjects.map(s => `<button class="side-link ${f.subject === s ? 'active' : ''}" data-act="filter" data-k="lectures.subject" data-v="${h(s)}" data-reset="lectures.chapter">${h(s)}<small>${s === 'All' ? S.data.lectures.length : S.data.lectures.filter(l => l.subject === s).length}</small></button>`).join('')}</div>` : `<div class="side-grp"><h6>Chapter</h6>${chapters.map(c => `<button class="side-link ${f.chapter === c ? 'active' : ''}" data-act="filter" data-k="lectures.chapter" data-v="${h(c)}">${h(c)}<small>${c === 'All' ? S.data.lectures.length : S.data.lectures.filter(l => l.chapter === c).length}</small></button>`).join('')}</div>`}
         <div class="side-grp"><h6>Course</h6><select class="select" data-filter="lectures.course"><option value="All">All courses</option>${S.data.courses.map(c => `<option value="${h(c.id)}" ${f.course === c.id ? 'selected' : ''}>${h(c.title)}</option>`).join('')}</select></div></aside>
       <div><div class="toolbar"><div class="input-ic">${icon('search', 17)}<input class="input" id="f-lec-q" data-filter="lectures.q" placeholder="Search lectures by title or topic…" value="${h(f.q)}"></div>
         <select class="select" data-filter="lectures.chapter">${chapters.map(c => `<option ${f.chapter === c ? 'selected' : ''}>${h(c)}</option>`).join('')}</select></div>
@@ -199,7 +199,7 @@ const Pages = {
       <aside class="sidebar"><div class="side-grp"><h6>Class</h6>${classes.map(s => `<button class="side-link ${f.cls === s ? 'active' : ''}" data-act="filter" data-k="materials.cls" data-v="${h(s)}">${h(s)}</button>`).join('')}</div>
       <div class="side-grp"><h6>Type</h6>${types.map(s => `<button class="side-link ${f.type === s ? 'active' : ''}" data-act="filter" data-k="materials.type" data-v="${h(s)}">${h(s)}<small>${s === 'All' ? all.length : all.filter(m => m.type === s).length}</small></button>`).join('')}</div></aside>
       <div><div class="toolbar"><div class="input-ic">${icon('search', 17)}<input class="input" id="f-mat-q" data-filter="materials.q" placeholder="Search notes…" value="${h(f.q)}"></div>
-        <select class="select" data-filter="materials.subject" data-reset="materials.chapter">${subjects.map(c => `<option ${f.subject === c ? 'selected' : ''}>${h(c)}</option>`).join('')}</select>
+        ${subjects.length > 2 ? `<select class="select" data-filter="materials.subject" data-reset="materials.chapter">${subjects.map(c => `<option ${f.subject === c ? 'selected' : ''}>${h(c)}</option>`).join('')}</select>` : ''}
         <select class="select" data-filter="materials.chapter">${chapters.map(c => `<option ${f.chapter === c ? 'selected' : ''}>${h(c)}</option>`).join('')}</select></div>
         <div class="chips mb24">${tags.map(s => `<button class="chip ${f.tag === s ? 'active' : ''}" data-act="filter" data-k="materials.tag" data-v="${h(s)}">${icon('tag', 13)} ${h(s)}</button>`).join('')}</div>
         ${!ready('materials') ? skeletonGrid(4, 'g2') : list.length ? `<div class="grid g2">${list.map(materialCard).join('')}</div>` : emptyState('file', 'No materials found', 'Try a different filter combination.', `<button class="btn btn-ghost" data-act="clear-filters" data-k="materials">Clear filters</button>`)}

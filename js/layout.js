@@ -137,7 +137,7 @@ function heroArt() {
     <rect x="150" y="12" width="150" height="16" rx="8" fill="#EEF2FF"/>
     <rect x="20" y="56" width="240" height="140" rx="14" fill="url(#ha1)"/>
     <g fill="#fff" opacity=".1"><circle cx="230" cy="70" r="50"/></g>
-    <text x="38" y="88" font-family="Georgia,serif" font-style="italic" font-size="18" fill="#E9CF8A">v² = u² + 2as</text>
+    <text x="38" y="88" font-family="Georgia,serif" font-style="italic" font-size="18" fill="#E9CF8A">∫ eˣ dx = eˣ + C</text>
     <circle cx="140" cy="130" r="24" fill="#fff"/><path d="M134 119v22l18-11z" fill="#2952E3"/>
     <rect x="38" y="176" width="204" height="5" rx="2.5" fill="#fff" opacity=".25"/><rect x="38" y="176" width="120" height="5" rx="2.5" fill="#E9CF8A"/>
     <rect x="276" y="56" width="104" height="66" rx="12" fill="#fff" stroke="#E2E7F1"/><text x="290" y="80" font-family="Inter" font-size="10" fill="#65718E" font-weight="600">LECTURES</text><text x="290" y="106" font-family="Manrope,Inter" font-size="22" font-weight="800" fill="#0B1B3F">12/18</text>
@@ -179,7 +179,7 @@ function openSearch(initial = '') {
       if (!hits.length) continue; count += hits.length;
       html += `<div class="sr-grp">${label}</div>` + hits.map(x => `<a class="sr-item" href="#${route}-${h(x.id)}"><span class="ic">${icon(ic)}</span><div><b>${h(x.title)}</b><span>${h([x.subject, x.chapter || x.cls || x.exam].filter(Boolean).join(' · '))}</span></div></a>`).join('');
     }
-    res.innerHTML = count ? html : `<div class="empty" style="border:0">${'<div class="ic">' + icon('search', 26) + '</div>'}<h4>No results for “${h(inp.value)}”</h4><p>Try a subject, chapter or topic name — for example “Kinematics” or “Integration”.</p></div>`;
+    res.innerHTML = count ? html : `<div class="empty" style="border:0">${'<div class="ic">' + icon('search', 26) + '</div>'}<h4>No results for “${h(inp.value)}”</h4><p>Try a subject, chapter or topic name — for example “Integration” or “Matrices”.</p></div>`;
     sel = 0; mark();
   };
   const mark = () => { const items = $$('.sr-item', res); items.forEach((it, i) => it.classList.toggle('sel', i === sel)); };

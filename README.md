@@ -17,4 +17,4 @@ Open `index.html` in a browser, or serve the folder with any static server, e.g.
 
 It's a static site — on Vercel or Netlify, import this repository with no build command and `/` as the output directory.
 
-Note: student accounts, progress and the admin panel use the database of the Claude-hosted version. When hosted elsewhere, the site runs with sample content and nothing is saved.
+Student accounts, progress and the admin panel use the database of the Claude-hosted version. When hosted elsewhere, the site runs with sample content and nothing is saved.

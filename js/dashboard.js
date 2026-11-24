@@ -13,7 +13,7 @@ Object.assign(Pages, {
       <div style="background:var(--surface);padding:40px"><h3 style="font-size:22px">Create your student profile</h3><p class="muted small mt8">You're signed in${S.accountName ? ' as <b>' + h(S.accountName) + '</b>' : ''}. Tell us a little about yourself.</p>
         <form data-form="register" class="mt24"><div class="field"><label>Full name</label><input class="input" name="name" required maxlength="60" value="${h(S.accountName)}" placeholder="Shown on leaderboards"></div>
         <div class="form-row"><div class="field"><label>Class</label><select class="select" name="cls">${(tax().classes || ['Class 11', 'Class 12']).map(c => `<option>${h(c)}</option>`).join('')}<option>Other</option></select></div>
-        <div class="field"><label>Preparing for</label><select class="select" name="goal">${['JEE Main / Advanced', 'NEET', 'Board Exams', 'Olympiads', 'Other'].map(c => `<option>${c}</option>`).join('')}</select></div></div>
+        <div class="field"><label>Preparing for</label><select class="select" name="goal">${['JEE Main / Advanced', 'Board Exams', 'Olympiads', 'Other'].map(c => `<option>${c}</option>`).join('')}</select></div></div>
         <label class="check mb16"><input type="checkbox" name="agree" required> I agree to the <a class="link" href="#terms">terms</a> and <a class="link" href="#privacy">privacy policy</a></label>
         <button class="btn btn-primary btn-block btn-lg">Create profile ${icon('arrow', 16)}</button>
         ${S.isAdmin ? `<p class="small muted mt16">You're the teacher on this platform — the <a class="link" href="#admin">Admin panel</a> is where you manage content. Creating a student profile is optional (useful for testing).</p>` : ''}</form></div></div>`;
@@ -77,7 +77,7 @@ Object.assign(Pages, {
 function openProfile() {
   const r = myResult() || {};
   const m = openModal({
-    title: 'Edit profile', body: `<form><div class="field"><label>Full name</label><input class="input" name="name" maxlength="60" value="${h(r.name || '')}"></div><div class="form-row"><div class="field"><label>Class</label><select class="select" name="cls">${[...(tax().classes || []), 'Other'].map(c => `<option ${r.cls === c ? 'selected' : ''}>${h(c)}</option>`).join('')}</select></div><div class="field"><label>Preparing for</label><select class="select" name="goal">${['JEE Main / Advanced', 'NEET', 'Board Exams', 'Olympiads', 'Other'].map(c => `<option ${r.goal === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div></div></form>`,
+    title: 'Edit profile', body: `<form><div class="field"><label>Full name</label><input class="input" name="name" maxlength="60" value="${h(r.name || '')}"></div><div class="form-row"><div class="field"><label>Class</label><select class="select" name="cls">${[...(tax().classes || []), 'Other'].map(c => `<option ${r.cls === c ? 'selected' : ''}>${h(c)}</option>`).join('')}</select></div><div class="field"><label>Preparing for</label><select class="select" name="goal">${['JEE Main / Advanced', 'Board Exams', 'Olympiads', 'Other'].map(c => `<option ${r.goal === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div></div></form>`,
     foot: `<button class="btn btn-ghost" data-c>Cancel</button><button class="btn btn-primary" data-s>Save</button>`
   });
   m.querySelector('[data-c]').onclick = closeModal;
