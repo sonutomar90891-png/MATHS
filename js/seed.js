@@ -15,7 +15,7 @@ function makeSeed() {
     instructorBio: 'ST teaches Class 11–12 Mathematics for board exams and JEE, with a concept-first approach: understand the idea, see why it works, then practise until it becomes second nature.',
     about: 'OnlyMaths is an online academy that does one thing and does it well: mathematics. Every student deserves clear concepts, quality practice and honest feedback on their progress.\n\nEvery lecture is planned chapter by chapter, every formula sheet is written to be revised in minutes, and every test comes with step-by-step solutions so mistakes turn into lessons.\n\nWhether you are strengthening your basics for the boards or pushing for a top rank in JEE, the platform tracks your journey and shows you exactly which chapters need more work.',
     mission: 'Make mathematics clear, structured and confidence-building for every student.',
-    email: 'hello@onlymaths.in', phone: '+91 98765 43210', whatsapp: '919876543210', address: 'Online classes · India',
+    email: 'Sonutomar90891@gmail.com', phone: '', whatsapp: '', address: 'Online classes · India',
     youtube: 'https://www.youtube.com/', instagram: 'https://www.instagram.com/', telegram: 'https://telegram.org/', facebook: 'https://www.facebook.com/', linkedin: '',
   };
   const taxonomy = {
