@@ -102,7 +102,7 @@ const Pages = {
   courses() {
     const t = tax(); const f = F.courses;
     const classes = ['All', ...uniq([...(t.classes || []), ...S.data.courses.map(c => c.cls)])];
-    const subjects = ['All', ...uniq([...(t.subjects || []), ...S.data.courses.map(c => c.subject)])];
+    const subjects = ['All', ...uniq([...S.data.courses.map(c => c.subject)])];
     const list = S.data.courses.filter(c => (f.cls === 'All' || c.cls === f.cls) && (f.subject === 'All' || c.subject === f.subject) && (!f.q || (c.title + ' ' + c.desc + ' ' + c.subject).toLowerCase().includes(f.q.toLowerCase()))).sort((a, b) => (a.order || 0) - (b.order || 0));
     return pageHead('Courses', 'Structured, chapter-wise programs combining lectures, notes and practice.', [['Courses']]) + `<div class="container page-body">
       <div class="toolbar"><div class="input-ic">${icon('search', 17)}<input class="input" id="f-courses-q" data-filter="courses.q" placeholder="Search courses…" value="${h(f.q)}"></div>
@@ -146,7 +146,7 @@ const Pages = {
 
   lectures() {
     const f = F.lectures; const st = myState(); const t = tax();
-    const subjects = ['All', ...uniq([...(t.subjects || []), ...S.data.lectures.map(l => l.subject)])];
+    const subjects = ['All', ...uniq([...S.data.lectures.map(l => l.subject)])];
     const chapters = ['All', ...uniq(S.data.lectures.filter(l => f.subject === 'All' || l.subject === f.subject).map(l => l.chapter))];
     let list = S.data.lectures.filter(l => (f.subject === 'All' || l.subject === f.subject) && (f.chapter === 'All' || l.chapter === f.chapter) && (f.course === 'All' || l.courseId === f.course) && (!f.q || [l.title, l.topic, l.chapter, l.desc].join(' ').toLowerCase().includes(f.q.toLowerCase())));
     if (f.view === 'fav') list = list.filter(l => st.favs.includes(l.id));
@@ -190,7 +190,7 @@ const Pages = {
     const f = F.materials; const t = tax();
     const all = S.data.materials;
     const classes = ['All', ...uniq([...(t.classes || []), ...all.map(m => m.cls)])];
-    const subjects = ['All', ...uniq([...(t.subjects || []), ...all.map(m => m.subject)])];
+    const subjects = ['All', ...uniq([...all.map(m => m.subject)])];
     const chapters = ['All', ...uniq(all.filter(m => f.subject === 'All' || m.subject === f.subject).map(m => m.chapter))];
     const tags = ['All', 'Important', 'Revision', 'Practice', 'Formula Sheet'];
     const types = ['All', ...uniq(all.map(m => m.type))];

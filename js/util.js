@@ -271,8 +271,21 @@ function rowsToQuestions(rows) {
     const type = (hasHead ? g('type') : String(r[1] ?? '')).toLowerCase().startsWith('m') || answer.length > 1 ? 'multi' : 'single';
     if (options.length < 2 || !answer.length) continue;
     const dRaw = hasHead ? g('difficulty').toLowerCase() : ''; const difficulty = /^e/.test(dRaw) ? 'Easy' : /^(m|med)/.test(dRaw) ? 'Moderate' : /^(d|h)/.test(dRaw) ? 'Difficult' : '';
-    out.push({ id: genId(), text, type, options, answer, explanation: hasHead ? g('explanation') : String(r[7] ?? '').trim(), chapter: hasHead ? g('chapter') : '', topic: hasHead ? g('topic') : '', difficulty, cls: hasHead ? g('class') : '' });
+    out.push({ id: genId(), text, type, options, answer, explanation: hasHead ? g('explanation') : String(r[7] ?? '').trim(), chapter: hasHead ? g('chapter') : '', topic: hasHead ? (g('topic') || g('subtopic')) : '', difficulty, cls: hasHead ? g('class') : '', subject: hasHead ? ({ m: 'Mathematics', p: 'Physics', c: 'Chemistry' }[g('subject').toLowerCase().slice(0, 1)] || g('subject')) : '', exams: hasHead ? g('exam').split(/[,;/|]+/).map(x => x.trim()).filter(Boolean).map(x => /adv/i.test(x) ? 'JEE Advanced' : /main/i.test(x) ? 'JEE Main' : /cet|mht/i.test(x) ? 'MHT CET' : x) : [], year: hasHead ? g('year') : '' });
   }
   return out;
+}
+let MJ = null;
+function typesetMath(root) {
+  const el = root || document.getElementById('app'); if (!el) return;
+  if (!/\$[^$\s][^$]*\$|\\\(|\\\[/.test(el.textContent || '')) return;
+  if (!window.MathJax || !window.MathJax.typesetPromise) {
+    if (MJ) return;
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, svg: { fontCache: 'global' }, startup: { typeset: false } };
+    MJ = loadScript('https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js').then(() => window.MathJax.startup.promise).then(() => { ['app', 'overlay-root'].forEach(id => typesetMath(document.getElementById(id))); }).catch(() => { });
+    return;
+  }
+  window.MathJax.typesetClear && window.MathJax.typesetClear([el]);
+  window.MathJax.typesetPromise([el]).catch(() => { });
 }
 function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }

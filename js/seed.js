@@ -18,11 +18,7 @@ function makeSeed() {
     email: 'Sonutomar90891@gmail.com', phone: '', whatsapp: '', address: 'Online classes · India',
     youtube: 'https://www.youtube.com/', instagram: 'https://www.instagram.com/', telegram: 'https://telegram.org/', facebook: 'https://www.facebook.com/', linkedin: '',
   };
-  const taxonomy = {
-    classes: ['Class 11', 'Class 12', 'JEE'],
-    subjects: ['Mathematics'],
-    chapters: { Mathematics: ['Sets & Functions', 'Trigonometry', 'Quadratic Equations', 'Sequences & Series', 'Permutations & Combinations', 'Coordinate Geometry', 'Limits & Derivatives', 'Integration', 'Matrices & Determinants', 'Probability'] },
-  };
+  const taxonomy = {"classes": ["Class 11", "Class 12", "JEE"], "subjects": ["Mathematics", "Physics", "Chemistry"], "exams": ["JEE Main", "JEE Advanced", "MHT CET"], "chapters": {"Mathematics": ["Sets & Functions", "Complex Numbers", "Quadratic Equations", "Sequences & Series", "Permutations & Combinations", "Binomial Theorem", "Trigonometry", "Inverse Trigonometric Functions", "Coordinate Geometry", "Conic Sections", "Limits & Derivatives", "Continuity & Differentiability", "Application of Derivatives", "Integration", "Differential Equations", "Matrices & Determinants", "Vector Algebra", "3D Geometry", "Probability", "Statistics"], "Physics": ["Units & Measurements", "Kinematics", "Laws of Motion", "Work, Energy & Power", "Rotational Motion", "Gravitation", "Properties of Solids & Liquids", "Thermodynamics", "Kinetic Theory of Gases", "Oscillations & Waves", "Electrostatics", "Current Electricity", "Magnetic Effects of Current & Magnetism", "Electromagnetic Induction & AC", "Electromagnetic Waves", "Ray & Wave Optics", "Dual Nature of Matter & Radiation", "Atoms & Nuclei", "Semiconductor Electronics", "Experimental Physics"], "Chemistry": ["Some Basic Concepts of Chemistry", "Atomic Structure", "Classification of Elements & Periodicity", "Chemical Bonding", "States of Matter", "Chemical Thermodynamics", "Solutions", "Equilibrium", "Redox Reactions", "Electrochemistry", "Chemical Kinetics", "p-Block Elements", "d- & f-Block Elements", "Coordination Compounds", "General Organic Chemistry", "Hydrocarbons", "Haloalkanes & Haloarenes", "Alcohols, Phenols & Ethers", "Aldehydes, Ketones & Carboxylic Acids", "Amines", "Biomolecules", "Practical Chemistry"]}};
 
   const C = (title, cls, level, order, desc) => ({ title, subject: 'Mathematics', cls, instructor: T, level, featured: true, order, restricted: false, desc });
   const courses = {

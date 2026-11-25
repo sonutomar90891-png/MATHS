@@ -446,6 +446,13 @@ body.drawer-open .drawer{transform:none}
 .legend span{display:flex;align-items:center;gap:8px}
 .legend i{width:20px;height:20px;border-radius:6px;display:inline-grid;place-items:center;font-style:normal;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
 
+.tg-step{display:flex;gap:14px;padding:16px 0;border-bottom:1px dashed var(--border)}
+.tg-step:first-child{padding-top:0}.tg-step:last-child{border:0;padding-bottom:0}
+.tg-num{width:30px;height:30px;border-radius:50%;background:var(--grad-royal);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex-shrink:0;box-shadow:0 4px 10px -4px rgba(41,82,227,.7)}
+.tg-step h4{font-size:15.5px;font-weight:700;padding-top:4px}
+.q-img{display:block;max-width:100%;max-height:340px;border-radius:12px;border:1px solid var(--border);background:#fff;margin:4px 0 18px}
+mjx-container{font-size:108%!important}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden}
 /* ===== Tables ===== */
 .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
 table.t{width:100%;border-collapse:collapse;font-size:14px}

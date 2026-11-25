@@ -40,7 +40,7 @@ const App = {
     document.title = App.title(r);
     const md = $('meta[name=description]'); if (md) md.setAttribute('content', s.heroSub || 'Video lectures, notes, quizzes and mock tests.');
     if (fid) { const el = document.getElementById(fid); if (el) { el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch { } } }
-    App.observe();
+    App.observe(); typesetMath();
     if (routeChanged) { App.lastRoute = r.raw; document.body.classList.remove('drawer-open'); window.scrollTo({ top: 0 }); App.onRoute(r); }
   },
   onRoute(r) {

@@ -16,7 +16,7 @@ function reviewList(questions, answers, kind, refId) {
   return questions.map((q, i) => {
     const sel = answers[q.id] || []; const ok = isCorrect(q, sel); const skip = !sel.length;
     return `<div class="card q-card mt16"><div class="q-num flex between"><span>Question ${i + 1} ${q.type === 'multi' ? '<span class="badge b-violet">Multiple correct</span>' : ''}</span><span class="flex">${skip ? '<span class="badge">Not answered</span>' : ok ? `<span class="badge b-green">${icon('check', 12)} Correct</span>` : `<span class="badge b-red">${icon('x', 12)} Incorrect</span>`}${bookmarkBtn(kind, refId, q)}</span></div>
-      <div class="q-text">${h(q.text)}</div><div class="opts">${q.options.map((o, j) => { const right = q.answer.includes(j), picked = sel.includes(j); return `<div class="opt ${q.type === 'multi' ? 'multi' : ''} ${right ? 'right' : picked ? 'wrong' : ''}" disabled><span class="k">${right ? icon('check', 15) : picked ? icon('x', 15) : KEYS[j]}</span><span class="grow">${h(o)}</span>${picked ? '<span class="badge">Your answer</span>' : ''}</div>`; }).join('')}</div>
+      <div class="q-text">${h(q.text)}</div>${qImg(q)}<div class="opts">${q.options.map((o, j) => { const right = q.answer.includes(j), picked = sel.includes(j); return `<div class="opt ${q.type === 'multi' ? 'multi' : ''} ${right ? 'right' : picked ? 'wrong' : ''}" disabled><span class="k">${right ? icon('check', 15) : picked ? icon('x', 15) : KEYS[j]}</span><span class="grow">${h(o)}</span>${picked ? '<span class="badge">Your answer</span>' : ''}</div>`; }).join('')}</div>
       ${q.explanation ? `<div class="explain"><b>${icon('bulb', 15)} Explanation</b><div class="mt8">${h(q.explanation)}</div></div>` : ''}</div>`;
   }).join('');
 }
@@ -73,7 +73,7 @@ Object.assign(Pages, {
       <div class="q-top"><div><b>Question ${run.cur + 1}</b> <span class="muted">of ${run.qs.length}</span></div><div class="flex"><span class="muted small">${answered} answered</span><span class="timer" id="qz-timer">${icon('clock', 17)} <span>${fmtSecs((run.end - Date.now()) / 1000)}</span></span></div></div>
       <div class="progress mb24"><i style="width:${(run.cur + 1) / run.qs.length * 100}%"></i></div>
       <div class="card q-card"><div class="q-num">${h(qz.subject)} · ${q.type === 'multi' ? '<span class="badge b-violet">Select all that apply</span>' : '<span class="badge">Single correct</span>'}</div>
-        <div class="q-text">${h(q.text)}</div>
+        <div class="q-text">${h(q.text)}</div>${qImg(q)}
         <div class="opts">${run.optOrder[q.id].map(j => `<button class="opt ${q.type === 'multi' ? 'multi' : ''} ${sel.includes(j) ? 'sel' : ''}" data-act="quiz-pick" data-j="${j}"><span class="k">${q.type === 'multi' && sel.includes(j) ? icon('check', 15) : KEYS[run.optOrder[q.id].indexOf(j)]}</span><span>${h(q.options[j])}</span></button>`).join('')}</div>
         <div class="q-nav"><button class="btn btn-ghost" data-act="quiz-nav" data-d="-1" ${run.cur === 0 ? 'disabled' : ''}>${icon('left', 16)} Previous</button>
         ${run.cur < run.qs.length - 1 ? `<button class="btn btn-primary" data-act="quiz-nav" data-d="1">Next ${icon('right', 16)}</button>` : `<button class="btn btn-gold" data-act="quiz-submit">${icon('check', 16)} Submit quiz</button>`}</div></div>
@@ -252,7 +252,7 @@ const Exam = {
     const cnt = k => r.qs.filter(x => (r.status[x.id] || 'nv') === k).length;
     root.innerHTML = `<div class="exam" id="exam"><div class="exam-top"><span class="brand-mark" style="width:32px;height:32px">${icon('grad', 17)}</span><h3>${h(t.title)}${r.practice ? ' · Practice' : ''}</h3><span class="timer" id="ex-timer">${icon('clock', 17)} <span>${fmtSecs((r.end - Date.now()) / 1000)}</span></span><button class="icon-btn" style="color:#fff" data-act="ex-pal" aria-label="Question palette">${icon('grid', 20)}</button><button class="btn btn-sm btn-outline-white" data-act="ex-exit">Exit</button></div>
       <div class="exam-body"><div class="exam-main"><div class="flex between wrap mb16"><b>Question ${r.cur + 1} of ${r.qs.length}</b><div class="flex"><span class="badge b-green">+${h(t.markCorrect || 4)}</span><span class="badge b-red">−${h(t.markWrong || 0)}</span>${q.type === 'multi' ? '<span class="badge b-violet">Multiple correct</span>' : '<span class="badge">Single correct</span>'}</div></div>
-        <div class="q-text" style="margin-top:0">${h(q.text)}</div>
+        <div class="q-text" style="margin-top:0">${h(q.text)}</div>${qImg(q)}
         <div class="opts" style="max-width:820px">${q.options.map((o, j) => `<button class="opt ${q.type === 'multi' ? 'multi' : ''} ${sel.includes(j) ? 'sel' : ''}" data-act="ex-pick" data-j="${j}"><span class="k">${KEYS[j]}</span><span>${h(o)}</span></button>`).join('')}</div></div>
       <aside class="exam-side"><div class="flex"><span class="avatar">${h(initials(myResult()?.name || 'Guest'))}</span><div><b>${h(myResult()?.name || 'Guest')}</b><div class="muted small">${r.practice ? 'Practice attempt' : 'Ranked attempt'}</div></div></div>
         <div class="legend"><span><i style="background:var(--green)">${cnt('ans')}</i>Answered</span><span><i style="background:var(--red)">${cnt('na')}</i>Not answered</span><span><i style="background:var(--surface-2);color:var(--text);border:1px solid var(--border-2)">${r.qs.length - Object.keys(r.status).length}</i>Not visited</span><span><i style="background:var(--violet);border-radius:50%">${cnt('mr')}</i>Marked</span><span style="grid-column:1/-1"><i style="background:var(--violet);border-radius:50%">${cnt('amr')}</i>Answered & marked (evaluated)</span></div>
@@ -260,6 +260,7 @@ const Exam = {
         <button class="btn btn-gold btn-block" style="margin-top:auto" data-act="ex-submit">${icon('check', 16)} Submit test</button></aside></div>
       <div class="exam-foot"><div class="grp"><button class="btn btn-ghost" data-act="ex-mark">${icon('flag', 15)} <span class="hide-sm">Mark for review & next</span><span class="sr">Mark</span></button><button class="btn btn-ghost" data-act="ex-clear">Clear</button></div>
         <div class="grp"><button class="btn btn-ghost" data-act="ex-nav" data-d="-1" ${r.cur === 0 ? 'disabled' : ''}>${icon('left', 16)}<span class="hide-sm">Previous</span></button><button class="btn btn-primary" data-act="ex-save">Save & next ${icon('right', 16)}</button></div></div></div>`;
+    typesetMath(root);
   },
   setStatus(q) { const r = EX.run; const has = (r.ans[q.id] || []).length; const cur = r.status[q.id]; if (cur === 'mr' || cur === 'amr') r.status[q.id] = has ? 'amr' : 'mr'; else r.status[q.id] = has ? 'ans' : 'na'; },
   visit(i) { const r = EX.run; r.cur = Math.max(0, Math.min(r.qs.length - 1, i)); const q = r.qs[r.cur]; if (!r.status[q.id]) r.status[q.id] = 'na'; $('#exam')?.classList.remove('pal-open'); Exam.render(); },
