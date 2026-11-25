@@ -213,7 +213,7 @@ async function genCreate(btn) {
 
 /* ===== Student: practice test generator ===== */
 Pages.practice = () => {
-  const head = pageHead('Create a Practice Test', 'Choose subject, exam, chapters, sub-topics and difficulty — get a fresh set of questions every time.', [['Quizzes', 'quizzes'], ['Practice Test']]);
+  const head = pageHead('Create Your Own Test', 'Choose subject, exam, chapters, sub-topics and difficulty — get a fresh set of questions every time.', [['Create Test']]);
   if (!S.loaded.bank) return head + `<div class="container page-body">${skeletonGrid(2, 'g2')}</div>`;
   if (!S.bank.length) return head + `<div class="container page-body">${emptyState('db', 'Practice tests are coming soon', 'Questions are being added. Meanwhile, try the ready-made quizzes.', '<a class="btn btn-primary" href="#quizzes">Browse quizzes</a>')}</div>`;
   const avail = tgPool(PR).length; const n = Math.min(tgWant(PR), avail);

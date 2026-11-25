@@ -29,6 +29,7 @@ function leaderTable(rows, unit = '%') {
   if (!rows.length) return `<p class="muted small card-pad">No attempts yet — be the first on the board.</p>`;
   return `<div class="table-wrap" style="border:0;border-radius:0"><table class="t"><thead><tr><th>#</th><th>Student</th><th>Score</th><th>Time</th></tr></thead><tbody>${rows.slice(0, 10).map((r, i) => `<tr ${r.uid === S.uid ? 'style="background:var(--royal-50)"' : ''}><td class="${i === 0 ? 'rank-1' : ''}">${i === 0 ? icon('trophy', 15) : i + 1}</td><td><div class="flex"><span class="avatar" style="width:28px;height:28px;font-size:11px">${h(initials(r.name))}</span>${h(r.name || 'Student')}${r.uid === S.uid ? ' <span class="badge b-royal">You</span>' : ''}</div></td><td><b>${unit === '%' ? Math.round(r.p * 100) + '%' : h(r.score)}</b></td><td class="muted">${fmtSecs(r.time)}</td></tr>`).join('')}</tbody></table></div>`;
 }
+function createBanner() { return `<a href="#create-test" class="create-mini mb24"><span class="ic">${icon('sparkle', 22)}</span><span class="grow"><b>Want a test on your own chapters?</b><small>Pick subject, exam, chapters, sub-topics and difficulty — get a fresh test instantly.</small></span><span class="btn btn-gold btn-sm">Create Test ${icon('arrow', 14)}</span></a>`; }
 const regNotice = () => isRegistered() ? '' : `<div class="notice info mb24">${icon('info', 18)}<div>You're practising as a guest. <a class="link" href="#login">Create your student profile</a> to save scores, appear on leaderboards and track progress.</div></div>`;
 
 Object.assign(Pages, {
@@ -37,7 +38,7 @@ Object.assign(Pages, {
     const subjects = ['All', ...uniq(all.map(q => q.subject))];
     const list = all.filter(q => (f.kind === 'All' || q.kind === f.kind) && (f.subject === 'All' || q.subject === f.subject) && (f.diff === 'All' || q.difficulty === f.diff) && (!f.q || [q.title, q.chapter, q.topic].join(' ').toLowerCase().includes(f.q.toLowerCase()))).sort(byDate);
     const lb = leaderboard('quiz');
-    return pageHead('Quizzes', 'Daily, chapter-wise and topic-wise MCQ practice with instant scoring and detailed explanations.', [['Quizzes']]) + `<div class="container page-body">
+    return pageHead('Quizzes', 'Daily, chapter-wise and topic-wise MCQ practice with instant scoring and detailed explanations.', [['Quizzes']]) + `<div class="container page-body">${createBanner()}
       <div class="toolbar"><div class="input-ic">${icon('search', 17)}<input class="input" id="f-qz-q" data-filter="quizzes.q" placeholder="Search quizzes…" value="${h(f.q)}"></div>
       ${subjects.length > 2 ? `<select class="select" data-filter="quizzes.subject">${subjects.map(s => `<option ${f.subject === s ? 'selected' : ''}>${h(s)}</option>`).join('')}</select>` : ''}
       <select class="select" data-filter="quizzes.diff">${['All', 'Easy', 'Moderate', 'Difficult'].map(s => `<option value="${s}" ${f.diff === s ? 'selected' : ''}>${s === 'All' ? 'All levels' : s}</option>`).join('')}</select></div>
@@ -51,7 +52,7 @@ Object.assign(Pages, {
     const run = QZ.run && QZ.run.quizId === id ? QZ.run : null;
     const qz = byId('quizzes', id) || (run && run.quiz); if (!qz) return id === 'practice' ? Pages.practice() : notFound('Quiz');
     const isPr = qz.kind === 'Practice';
-    const head = pageHead(qz.title, '', isPr ? [['Practice Test', 'practice'], ['Practice']] : [['Quizzes', 'quizzes'], [qz.title]]);
+    const head = pageHead(qz.title, '', isPr ? [['Create Test', 'create-test'], ['Practice']] : [['Quizzes', 'quizzes'], [qz.title]]);
     if (!run) {
       const hist = myAttempts('quiz', id).slice().reverse();
       return head + `<div class="container page-body">${regNotice()}<div class="lec-layout"><div class="card card-pad" style="padding:32px">
@@ -65,7 +66,7 @@ Object.assign(Pages, {
     }
     if (run.result) {
       const r = run.result;
-      return head + `<div class="container page-body"><div class="quiz-shell">${regNotice()}${resultHero(r, 'Score', `<div class="flex wrap mt24">${isPr ? `<a class="btn btn-primary" href="#practice">${icon('sparkle', 15)} New practice test</a>` : `<button class="btn btn-primary" data-act="quiz-start" data-id="${h(id)}">${icon('refresh', 15)} Retry quiz</button>`}<a class="btn btn-ghost" href="#quizzes">More quizzes</a><a class="btn btn-ghost" href="#results">My performance</a></div>`)}
+      return head + `<div class="container page-body"><div class="quiz-shell">${regNotice()}${resultHero(r, 'Score', `<div class="flex wrap mt24">${isPr ? `<a class="btn btn-primary" href="#create-test">${icon('sparkle', 15)} New practice test</a>` : `<button class="btn btn-primary" data-act="quiz-start" data-id="${h(id)}">${icon('refresh', 15)} Retry quiz</button>`}<a class="btn btn-ghost" href="#quizzes">More quizzes</a><a class="btn btn-ghost" href="#results">My performance</a></div>`)}
         <h3 class="mt32">Answer analysis</h3>${reviewList(run.qs, run.answers, isPr ? 'practice' : 'quiz', id)}</div></div>`;
     }
     const q = run.qs[run.cur]; const sel = run.answers[q.id] || []; const answered = Object.values(run.answers).filter(a => a && a.length).length;
@@ -87,9 +88,9 @@ Object.assign(Pages, {
     if (a.kind === 'practice') {
       ensureBank(); const ids = a.qids || Object.keys(a.answers || {});
       const pq = ids.map(id => S.bank.find(b => b.id === id)).filter(Boolean);
-      const hd = pageHead('Review: ' + a.title, fmtDT(a.at), [['Practice Test', 'practice'], ['Review']]);
+      const hd = pageHead('Review: ' + a.title, fmtDT(a.at), [['Create Test', 'create-test'], ['Review']]);
       if (!S.loaded.bank) return hd + `<div class="container page-body">${skeletonGrid(1, 'g2')}</div>`;
-      return hd + `<div class="container page-body"><div class="quiz-shell">${resultHero(a, 'Score', `<div class="mt16"><a class="btn btn-primary" href="#practice">${icon('sparkle', 15)} New practice test</a></div>`)}<h3 class="mt32">Detailed solutions</h3>${pq.length ? reviewList(pq, a.answers || {}, 'practice', 'practice') : '<p class="muted mt16">These questions have since been removed from the question bank.</p>'}</div></div>`;
+      return hd + `<div class="container page-body"><div class="quiz-shell">${resultHero(a, 'Score', `<div class="mt16"><a class="btn btn-primary" href="#create-test">${icon('sparkle', 15)} New practice test</a></div>`)}<h3 class="mt32">Detailed solutions</h3>${pq.length ? reviewList(pq, a.answers || {}, 'practice', 'practice') : '<p class="muted mt16">These questions have since been removed from the question bank.</p>'}</div></div>`;
     }
     const src = byId(a.kind === 'test' ? 'tests' : 'quizzes', a.refId);
     if (!src) return pageHead('Attempt review', '', [['Results', 'results'], ['Review']]) + `<div class="container page-body">${emptyState('alert', 'The original ' + a.kind + ' was removed', 'Your score is still saved in your history, but the questions are no longer available.')}</div>`;
@@ -104,7 +105,7 @@ Object.assign(Pages, {
     S.data.tests.forEach(t => groups[testStatus(t)].push(t));
     groups.upcoming.sort((a, b) => (a.start || '').localeCompare(b.start || ''));
     const sec = (k, title, ic) => `<h3 class="mt32 mb16 flex">${icon(ic, 20)} ${title} <span class="badge">${groups[k].length}</span></h3>${groups[k].length ? `<div class="grid g3">${groups[k].map(testCard).join('')}</div>` : `<p class="muted">No ${k} tests right now.</p>`}`;
-    return pageHead('Online Tests', 'Exam-grade timed tests with a question palette, mark-for-review, negative marking and instant results.', [['Online Tests']]) + `<div class="container page-body">${regNotice()}
+    return pageHead('Online Tests', 'Exam-grade timed tests with a question palette, mark-for-review, negative marking and instant results.', [['Online Tests']]) + `<div class="container page-body">${regNotice()}${createBanner()}
       ${!ready('tests') ? skeletonGrid(3) : S.data.tests.length ? sec('active', 'Live tests', 'zap') + sec('upcoming', 'Upcoming tests', 'clock') + sec('completed', 'Completed tests', 'checkc') : emptyState('test', 'No tests yet', 'Tests created by the teacher will appear here.')}</div>`;
   },
 

@@ -1,5 +1,5 @@
 /* ===== Router, rendering and events ===== */
-const TITLES = { practice: 'Create a Practice Test', home: '', about: 'About Us', contact: 'Contact Us', privacy: 'Privacy Policy', terms: 'Terms & Conditions', courses: 'Courses', lectures: 'Video Lectures', materials: 'Study Materials', quizzes: 'Quizzes', tests: 'Online Tests', series: 'Test Series', assignments: 'Assignments', results: 'Results & Performance', login: 'Login / Registration', dashboard: 'My Dashboard', admin: 'Admin Panel' };
+const TITLES = { practice: 'Create Your Own Test', create: 'Create Your Own Test', home: '', about: 'About Us', contact: 'Contact Us', privacy: 'Privacy Policy', terms: 'Terms & Conditions', courses: 'Courses', lectures: 'Video Lectures', materials: 'Study Materials', quizzes: 'Quizzes', tests: 'Online Tests', series: 'Test Series', assignments: 'Assignments', results: 'Results & Performance', login: 'Login / Registration', dashboard: 'My Dashboard', admin: 'Admin Panel' };
 function parseRoute() { const raw = decodeURIComponent(location.hash.slice(1)) || 'home'; const i = raw.indexOf('-'); return { raw, base: i < 0 ? raw : raw.slice(0, i), arg: i < 0 ? '' : raw.slice(i + 1) }; }
 const App = {
   lastRoute: null,
@@ -10,7 +10,7 @@ const App = {
       case 'courses': return P.courses(); case 'course': return P.course(a);
       case 'lectures': return P.lectures(); case 'lecture': return P.lecture(a);
       case 'materials': return P.materials(); case 'material': return P.material(a);
-      case 'quizzes': return P.quizzes(); case 'practice': return P.practice(); case 'quiz': return P.quiz(a); case 'review': return P.review(a);
+      case 'quizzes': return P.quizzes(); case 'practice': case 'create': return P.practice(); case 'quiz': return P.quiz(a); case 'review': return P.review(a);
       case 'tests': return P.tests(); case 'test': return P.test(a);
       case 'series': return a ? P.seriesDetail(a) : P.series();
       case 'assignments': return P.assignments(); case 'results': return P.results();
@@ -31,7 +31,7 @@ const App = {
     const ae = document.activeElement; const fid = ae && ae.id && app.contains(ae) ? ae.id : null; const sel = fid && 'selectionStart' in ae ? [ae.selectionStart, ae.selectionEnd] : null;
     const routeChanged = r.raw !== App.lastRoute;
     if (routeChanged && QZ.run && (QZ.run.result || !r.raw.startsWith('quiz-' + QZ.run.quizId))) { if (QZ.run.result) QZ.run = null; }
-    if (['practice', 'review', 'dashboard', 'admin'].includes(r.base)) ensureBank();
+    if (['practice', 'create', 'review', 'dashboard', 'admin'].includes(r.base)) ensureBank();
     let main; try { main = App.page(r); } catch (e) { console.error(e); main = `<div class="container page-body">${emptyState('alert', 'Something went wrong', 'This page could not be displayed. Try refreshing or going back home.', '<a class="btn btn-primary" href="#home">Back to home</a>')}</div>`; }
     const s = site(); const pin = S.data.announcements.filter(a => a.pinned).sort(byDate)[0];
     const banner = S.mode === 'offline' ? `<div class="sys-banner">${icon('info', 14)} Preview mode — the database isn't reachable in this view, so you're seeing sample content and nothing you do is saved.</div>` : S.error ? `<div class="sys-banner">${icon('alert', 14)} ${h(S.error)}</div>` : '';

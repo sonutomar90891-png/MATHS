@@ -26,9 +26,15 @@ const Pages = {
       <div class="reveal in">${s.heroBadgeText ? `<a href="#series" class="hero-eyebrow"><span>${h(s.heroBadge || 'New')}</span>${h(s.heroBadgeText)} ${icon('arrow', 14)}</a>` : ''}
         <h1>${titleHTML}</h1><p class="sub">${h(s.heroSub || 'Video lectures, notes, quizzes and exam-grade tests — everything you need in one place.')}</p>
         <div class="hero-cta"><a href="#courses" class="btn btn-gold btn-lg">Explore Courses ${icon('arrow', 18)}</a><a href="${isRegistered() ? '#dashboard' : '#login'}" class="btn btn-outline-white btn-lg">${icon('play', 16)} Start Learning</a></div>
+        <a href="#create-test" class="hero-create"><span class="ic">${icon('sparkle', 20)}</span><span><b>Create your own test</b><small>Pick subject, exam, chapters &amp; difficulty — ready in seconds</small></span>${icon('arrow', 18)}</a>
         <div class="hero-trust"><span class="flex" style="gap:6px">${icon('shield', 16)} Concept-first teaching</span><i class="sep"></i><span class="flex" style="gap:6px">${icon('chart', 16)} Real performance analytics</span><i class="sep"></i><span class="flex" style="gap:6px">${icon('award', 16)} Detailed solutions</span></div></div>
       <div class="hero-art">${heroArt()}</div></div></section>
     <div class="container stats-wrap reveal">${statsBlock()}</div>
+    <section class="section tight"><div class="container"><div class="create-band reveal">
+      <div class="cb-text"><div class="eyebrow">New · Test Generator</div><h2>Create your own test in 30 seconds</h2><p>Choose exactly what you want to practise and get a fresh set of exam-style questions every time — with a timer, instant score and step-by-step solutions.</p>
+        <a href="#create-test" class="btn btn-gold btn-lg mt24">${icon('sparkle', 18)} Create My Test</a></div>
+      <ol class="cb-steps">${[['book', 'Subject'], ['award', 'Exam'], ['layers', 'Chapters'], ['list', 'Sub-topics'], ['target', 'Difficulty'], ['quiz', 'Questions']].map(([ic, l], i) => `<li><span class="n">${i + 1}</span><span class="ic">${icon(ic, 20)}</span><b>${l}</b></li>`).join('')}</ol>
+    </div></div></section>
 
     <section class="section"><div class="container">
       <div class="sec-head reveal"><div><div class="eyebrow">Featured Courses</div><h2>Programs built for results</h2><p>Chapter-wise courses that combine lectures, notes and practice into one clear path.</p></div><a href="#courses" class="link">View all courses ${icon('arrow', 16)}</a></div>
@@ -48,7 +54,7 @@ const Pages = {
     <section class="section alt"><div class="container">
       <div class="sec-head reveal"><div><div class="eyebrow">Quiz & Practice</div><h2>Practice a little every day</h2><p>Timed quizzes with instant scoring, explanations and a leaderboard.</p></div><div class="chips">${kinds.map(k => `<button class="chip ${F.homeQuiz === k ? 'active' : ''}" data-act="home-quiz" data-v="${k}">${k}</button>`).join('')}</div></div>
       ${!ready('quizzes') ? skeletonGrid(3) : quizzes.length ? `<div class="grid g3">${quizzes.map(q => `<div class="reveal in">${quizCard(q)}</div>`).join('')}</div>` : emptyState('quiz', 'No quizzes in this category', 'Try another category or check back soon.')}
-      <div class="center mt32 flex wrap" style="justify-content:center"><a href="#practice" class="btn btn-gold">${icon('sparkle', 15)} Create your own practice test</a><a href="#quizzes" class="btn btn-ghost">See all quizzes ${icon('arrow', 15)}</a></div>
+      <div class="center mt32 flex wrap" style="justify-content:center"><a href="#create-test" class="btn btn-gold">${icon('sparkle', 15)} Create your own test</a><a href="#quizzes" class="btn btn-ghost">See all quizzes ${icon('arrow', 15)}</a></div>
     </div></section>
 
     <section class="section"><div class="container">

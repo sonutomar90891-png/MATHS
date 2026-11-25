@@ -1,12 +1,12 @@
 /* ===== Layout: nav, footer, shared components ===== */
 const NAV = {
   learn: [['courses', 'book', 'Courses', 'Structured, chapter-wise programs'], ['lectures', 'video', 'Video Lectures', 'Watch, bookmark and track progress'], ['materials', 'file', 'Study Materials', 'Notes, formula sheets & worksheets']],
-  practice: [['quizzes', 'quiz', 'Quizzes', 'Daily, chapter & topic practice'], ['practice', 'sparkle', 'Create Practice Test', 'Pick chapters, get a fresh test'], ['tests', 'test', 'Online Tests', 'Exam-grade timed tests'], ['series', 'layers', 'Test Series', 'Full mock series with rankings'], ['assignments', 'task', 'Assignments', 'Submit work, get graded']],
+  practice: [['quizzes', 'quiz', 'Quizzes', 'Daily, chapter & topic practice'], ['create-test', 'sparkle', 'Create Your Own Test', 'Subject, exam, chapters — a fresh test in seconds'], ['tests', 'test', 'Online Tests', 'Exam-grade timed tests'], ['series', 'layers', 'Test Series', 'Full mock series with rankings'], ['assignments', 'task', 'Assignments', 'Submit work, get graded']],
 };
 function brandHTML() { const s = site(); return `<a href="#home" class="brand"><span class="brand-mark">${icon('grad', 20)}</span><span>${h(s.brand || 'OnlyMaths')}<small>${h(s.tagline || 'Academy')}</small></span></a>`; }
 function navHTML(route) {
   const base = route.split('-')[0];
-  const isIn = arr => arr.some(a => a[0] === base);
+  const isIn = arr => arr.some(a => a[0].split('-')[0] === base || (base === 'practice' && a[0] === 'create-test'));
   const dd = (label, arr, key) => `<div class="dd"><button class="nav-link ${isIn(arr) ? 'active' : ''}" aria-haspopup="true">${label} ${icon('down', 14)}</button><div class="dd-menu">${arr.map(([r, ic, t, d]) => `<a class="dd-item" href="#${r}"><span class="ic">${icon(ic, 18)}</span><span><b>${t}</b><span>${d}</span></span></a>`).join('')}</div></div>`;
   const anns = S.data.announcements.slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   const seen = LS.get('seenAnn', '');
@@ -27,15 +27,16 @@ function navHTML(route) {
       <div class="dd" id="notif"><button class="icon-btn" data-act="notif" aria-label="Notifications">${icon('bell', 19)}${unread ? '<i class="dot"></i>' : ''}</button>
         <div class="dd-menu notif-panel"><div class="hd">Announcements <span class="badge b-royal">${anns.length}</span></div>
         ${anns.length ? anns.slice(0, 6).map(a => `<div class="notif-item"><b>${h(a.title)}</b><div class="muted">${h(a.body)}</div><time>${ago(a.date)}</time></div>`).join('') : '<div class="notif-item muted">No announcements yet.</div>'}</div></div>
-      ${S.isAdmin ? `<a href="#admin" class="btn btn-sm btn-gold hide-sm">${icon('settings', 15)} Admin</a>` : ''}
+      <a href="#create-test" class="btn btn-sm btn-gold create-btn ${base === 'create' || base === 'practice' ? 'on' : ''}" title="Create your own test">${icon('sparkle', 16)}<span class="lbl">Create Test</span></a>
+      ${S.isAdmin ? `<a href="#admin" class="btn btn-sm btn-ghost hide-sm">${icon('settings', 15)} Admin</a>` : ''}
       ${r ? `<a href="#dashboard" class="avatar" title="My dashboard">${h(initials(r.name))}</a>` : `<a href="#login" class="btn btn-sm btn-primary hide-sm">Login / Register</a>`}
       <button class="icon-btn menu-btn" data-act="drawer" aria-label="Menu">${icon('menu', 22)}</button>
     </div></div></header>
   <div class="drawer-bg" data-act="drawer-close"></div>
   <aside class="drawer" aria-label="Mobile menu"><div class="drawer-hd">${brandHTML()}<button class="icon-btn" data-act="drawer-close">${icon('x')}</button></div>
-    <nav><a href="#home" class="${base === 'home' ? 'active' : ''}">${icon('home')} Home</a>
+    <nav><a href="#create-test" class="drawer-cta">${icon('sparkle')} Create Your Own Test</a><a href="#home" class="${base === 'home' ? 'active' : ''}">${icon('home')} Home</a>
     <div class="grp">Learn</div>${NAV.learn.map(([r, ic, t]) => `<a href="#${r}" class="${base === r ? 'active' : ''}">${icon(ic)} ${t}</a>`).join('')}
-    <div class="grp">Practice</div>${NAV.practice.map(([r, ic, t]) => `<a href="#${r}" class="${base === r ? 'active' : ''}">${icon(ic)} ${t}</a>`).join('')}
+    <div class="grp">Practice</div>${NAV.practice.map(([r, ic, t]) => `<a href="#${r}" class="${base === r.split('-')[0] ? 'active' : ''}">${icon(ic)} ${t}</a>`).join('')}
     <div class="grp">More</div><a href="#results">${icon('chart')} Results & Performance</a><a href="#about">${icon('info')} About Us</a><a href="#contact">${icon('mail')} Contact Us</a>
     <div class="grp">Account</div>${r ? `<a href="#dashboard">${icon('grid')} My Dashboard</a>` : `<a href="#login">${icon('user')} Login / Register</a>`}${S.isAdmin ? `<a href="#admin">${icon('settings')} Admin Panel</a>` : ''}
     </nav></aside>`;
@@ -47,7 +48,7 @@ function footerHTML() {
     <div>${brandHTML()}<p class="mt16" style="max-width:320px">${h(s.mission || 'Structured learning, quality material and honest progress tracking for every student.')}</p>
       <div class="socials">${soc.map(([k, ic]) => `<a href="${h(safeUrl(s[k]))}" target="_blank" rel="noopener" aria-label="${k}">${icon(ic, 18)}</a>`).join('')}${s.whatsapp ? `<a href="https://wa.me/${h(String(s.whatsapp).replace(/\D/g, ''))}" target="_blank" rel="noopener" aria-label="WhatsApp">${icon('wa', 18)}</a>` : ''}</div></div>
     <div><h5>Learn</h5><ul><li><a href="#courses">Courses</a></li><li><a href="#lectures">Video Lectures</a></li><li><a href="#materials">Study Materials</a></li><li><a href="#assignments">Assignments</a></li></ul></div>
-    <div><h5>Practice</h5><ul><li><a href="#quizzes">Quizzes</a></li><li><a href="#practice">Practice Test</a></li><li><a href="#tests">Online Tests</a></li><li><a href="#series">Test Series</a></li><li><a href="#results">Results</a></li></ul></div>
+    <div><h5>Practice</h5><ul><li><a href="#quizzes">Quizzes</a></li><li><a href="#create-test">Create Your Own Test</a></li><li><a href="#tests">Online Tests</a></li><li><a href="#series">Test Series</a></li><li><a href="#results">Results</a></li></ul></div>
     <div><h5>Company</h5><ul><li><a href="#about">About Us</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#privacy">Privacy Policy</a></li><li><a href="#terms">Terms & Conditions</a></li></ul></div>
     <div><h5>Get in touch</h5><ul>${s.email ? `<li class="flex">${icon('mail', 16)} ${h(s.email)}</li>` : ''}${s.phone ? `<li class="flex">${icon('phone', 16)} ${h(s.phone)}</li>` : ''}${s.address ? `<li class="flex">${icon('map', 16)} ${h(s.address)}</li>` : ''}</ul></div>
   </div><div class="foot-bottom"><span>© ${new Date().getFullYear()} ${h(s.brand || 'OnlyMaths')}. All rights reserved.</span><span>Made for curious minds.</span></div></div></footer>
