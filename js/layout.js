@@ -1,7 +1,7 @@
 /* ===== Layout: nav, footer, shared components ===== */
 const NAV = {
   learn: [['courses', 'book', 'Courses', 'Structured, chapter-wise programs'], ['lectures', 'video', 'Video Lectures', 'Watch, bookmark and track progress'], ['materials', 'file', 'Study Materials', 'Notes, formula sheets & worksheets']],
-  practice: [['quizzes', 'quiz', 'Quizzes', 'Daily, chapter & topic practice'], ['tests', 'test', 'Online Tests', 'Exam-grade timed tests'], ['series', 'layers', 'Test Series', 'Full mock series with rankings'], ['assignments', 'task', 'Assignments', 'Submit work, get graded']],
+  practice: [['quizzes', 'quiz', 'Quizzes', 'Daily, chapter & topic practice'], ['practice', 'sparkle', 'Create Practice Test', 'Pick chapters, get a fresh test'], ['tests', 'test', 'Online Tests', 'Exam-grade timed tests'], ['series', 'layers', 'Test Series', 'Full mock series with rankings'], ['assignments', 'task', 'Assignments', 'Submit work, get graded']],
 };
 function brandHTML() { const s = site(); return `<a href="#home" class="brand"><span class="brand-mark">${icon('grad', 20)}</span><span>${h(s.brand || 'OnlyMaths')}<small>${h(s.tagline || 'Academy')}</small></span></a>`; }
 function navHTML(route) {
@@ -47,7 +47,7 @@ function footerHTML() {
     <div>${brandHTML()}<p class="mt16" style="max-width:320px">${h(s.mission || 'Structured learning, quality material and honest progress tracking for every student.')}</p>
       <div class="socials">${soc.map(([k, ic]) => `<a href="${h(safeUrl(s[k]))}" target="_blank" rel="noopener" aria-label="${k}">${icon(ic, 18)}</a>`).join('')}${s.whatsapp ? `<a href="https://wa.me/${h(String(s.whatsapp).replace(/\D/g, ''))}" target="_blank" rel="noopener" aria-label="WhatsApp">${icon('wa', 18)}</a>` : ''}</div></div>
     <div><h5>Learn</h5><ul><li><a href="#courses">Courses</a></li><li><a href="#lectures">Video Lectures</a></li><li><a href="#materials">Study Materials</a></li><li><a href="#assignments">Assignments</a></li></ul></div>
-    <div><h5>Practice</h5><ul><li><a href="#quizzes">Quizzes</a></li><li><a href="#tests">Online Tests</a></li><li><a href="#series">Test Series</a></li><li><a href="#results">Results</a></li></ul></div>
+    <div><h5>Practice</h5><ul><li><a href="#quizzes">Quizzes</a></li><li><a href="#practice">Practice Test</a></li><li><a href="#tests">Online Tests</a></li><li><a href="#series">Test Series</a></li><li><a href="#results">Results</a></li></ul></div>
     <div><h5>Company</h5><ul><li><a href="#about">About Us</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#privacy">Privacy Policy</a></li><li><a href="#terms">Terms & Conditions</a></li></ul></div>
     <div><h5>Get in touch</h5><ul>${s.email ? `<li class="flex">${icon('mail', 16)} ${h(s.email)}</li>` : ''}${s.phone ? `<li class="flex">${icon('phone', 16)} ${h(s.phone)}</li>` : ''}${s.address ? `<li class="flex">${icon('map', 16)} ${h(s.address)}</li>` : ''}</ul></div>
   </div><div class="foot-bottom"><span>© ${new Date().getFullYear()} ${h(s.brand || 'OnlyMaths')}. All rights reserved.</span><span>Made for curious minds.</span></div></div></footer>

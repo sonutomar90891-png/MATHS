@@ -48,9 +48,10 @@ Object.assign(Pages, {
   },
 
   quiz(id) {
-    const qz = byId('quizzes', id); if (!qz) return notFound('Quiz');
     const run = QZ.run && QZ.run.quizId === id ? QZ.run : null;
-    const head = pageHead(qz.title, '', [['Quizzes', 'quizzes'], [qz.title]]);
+    const qz = byId('quizzes', id) || (run && run.quiz); if (!qz) return id === 'practice' ? Pages.practice() : notFound('Quiz');
+    const isPr = qz.kind === 'Practice';
+    const head = pageHead(qz.title, '', isPr ? [['Practice Test', 'practice'], ['Practice']] : [['Quizzes', 'quizzes'], [qz.title]]);
     if (!run) {
       const hist = myAttempts('quiz', id).slice().reverse();
       return head + `<div class="container page-body">${regNotice()}<div class="lec-layout"><div class="card card-pad" style="padding:32px">
@@ -64,8 +65,8 @@ Object.assign(Pages, {
     }
     if (run.result) {
       const r = run.result;
-      return head + `<div class="container page-body"><div class="quiz-shell">${regNotice()}${resultHero(r, 'Score', `<div class="flex wrap mt24"><button class="btn btn-primary" data-act="quiz-start" data-id="${h(id)}">${icon('refresh', 15)} Retry quiz</button><a class="btn btn-ghost" href="#quizzes">More quizzes</a><a class="btn btn-ghost" href="#results">My performance</a></div>`)}
-        <h3 class="mt32">Answer analysis</h3>${reviewList(run.qs, run.answers, 'quiz', id)}</div></div>`;
+      return head + `<div class="container page-body"><div class="quiz-shell">${regNotice()}${resultHero(r, 'Score', `<div class="flex wrap mt24">${isPr ? `<a class="btn btn-primary" href="#practice">${icon('sparkle', 15)} New practice test</a>` : `<button class="btn btn-primary" data-act="quiz-start" data-id="${h(id)}">${icon('refresh', 15)} Retry quiz</button>`}<a class="btn btn-ghost" href="#quizzes">More quizzes</a><a class="btn btn-ghost" href="#results">My performance</a></div>`)}
+        <h3 class="mt32">Answer analysis</h3>${reviewList(run.qs, run.answers, isPr ? 'practice' : 'quiz', id)}</div></div>`;
     }
     const q = run.qs[run.cur]; const sel = run.answers[q.id] || []; const answered = Object.values(run.answers).filter(a => a && a.length).length;
     return head + `<div class="container page-body"><div class="quiz-shell">
@@ -83,6 +84,13 @@ Object.assign(Pages, {
   review(attemptId) {
     const r = myResult(); const a = (r?.attempts || []).find(x => x.id === attemptId);
     if (!a) return notFound('Attempt');
+    if (a.kind === 'practice') {
+      ensureBank(); const ids = a.qids || Object.keys(a.answers || {});
+      const pq = ids.map(id => S.bank.find(b => b.id === id)).filter(Boolean);
+      const hd = pageHead('Review: ' + a.title, fmtDT(a.at), [['Practice Test', 'practice'], ['Review']]);
+      if (!S.loaded.bank) return hd + `<div class="container page-body">${skeletonGrid(1, 'g2')}</div>`;
+      return hd + `<div class="container page-body"><div class="quiz-shell">${resultHero(a, 'Score', `<div class="mt16"><a class="btn btn-primary" href="#practice">${icon('sparkle', 15)} New practice test</a></div>`)}<h3 class="mt32">Detailed solutions</h3>${pq.length ? reviewList(pq, a.answers || {}, 'practice', 'practice') : '<p class="muted mt16">These questions have since been removed from the question bank.</p>'}</div></div>`;
+    }
     const src = byId(a.kind === 'test' ? 'tests' : 'quizzes', a.refId);
     if (!src) return pageHead('Attempt review', '', [['Results', 'results'], ['Review']]) + `<div class="container page-body">${emptyState('alert', 'The original ' + a.kind + ' was removed', 'Your score is still saved in your history, but the questions are no longer available.')}</div>`;
     const qs = (src.questions || []).filter(q => a.answers && Object.prototype.hasOwnProperty.call(a.answers, q.id) || true);
@@ -164,7 +172,7 @@ Object.assign(Pages, {
       mineHTML = `<div class="grid g4 mb24">${[['test', at.length, 'Total attempts'], ['target', avg + '%', 'Average score'], ['checkc', pct(totC, totC + totW) + '%', 'Accuracy'], ['trophy', at.filter(a => a.kind === 'test').length, 'Tests taken']].map(([ic, n, l]) => `<div class="card mini-stat"><div class="ic" style="background:var(--royal-50);color:var(--royal)">${icon(ic, 22)}</div><div><b>${n}</b><span>${l}</span></div></div>`).join('')}</div>
       <div class="grid g2"><div class="card card-pad"><h3 class="mb16" style="font-size:17px">Score trend</h3>${lineChart(at.slice(-12).map((a, i) => ({ v: pct(Math.max(0, a.score), a.max), label: a.title, short: String(i + 1) })))}</div>
       <div class="card card-pad"><h3 class="mb16" style="font-size:17px">Subject-wise accuracy</h3>${barChart(Object.entries(bySub).map(([k, v]) => ({ label: k, v: pct(v.c, v.c + v.w), note: v.n + ' attempts' })))}</div></div>
-      <div class="table-wrap mt24"><table class="t"><thead><tr><th>Attempt</th><th>Type</th><th>Score</th><th>Accuracy</th><th>Time</th><th>Date</th><th></th></tr></thead><tbody>${at.slice().reverse().map(a => `<tr><td><b>${h(a.title)}</b></td><td><span class="badge ${a.kind === 'test' ? 'b-gold' : 'b-royal'}">${a.kind === 'test' ? 'Test' : 'Quiz'}${a.practice ? ' · practice' : ''}</span></td><td><b>${a.score}</b>/${a.max}</td><td>${pct(a.correct, a.correct + a.wrong)}%</td><td>${fmtSecs(a.time)}</td><td class="muted">${fmtDT(a.at)}</td><td><a class="btn btn-sm btn-soft" href="#review-${h(a.id)}">Review</a></td></tr>`).join('')}</tbody></table></div>`;
+      <div class="table-wrap mt24"><table class="t"><thead><tr><th>Attempt</th><th>Type</th><th>Score</th><th>Accuracy</th><th>Time</th><th>Date</th><th></th></tr></thead><tbody>${at.slice().reverse().map(a => `<tr><td><b>${h(a.title)}</b></td><td><span class="badge ${a.kind === 'test' ? 'b-gold' : a.kind === 'practice' ? 'b-violet' : 'b-royal'}">${a.kind === 'test' ? 'Test' : a.kind === 'practice' ? 'Practice' : 'Quiz'}${a.practice ? ' · practice' : ''}</span></td><td><b>${a.score}</b>/${a.max}</td><td>${pct(a.correct, a.correct + a.wrong)}%</td><td>${fmtSecs(a.time)}</td><td class="muted">${fmtDT(a.at)}</td><td><a class="btn btn-sm btn-soft" href="#review-${h(a.id)}">Review</a></td></tr>`).join('')}</tbody></table></div>`;
     }
     return pageHead('Results & Performance', 'Your scores, accuracy, ranks and leaderboards in one place.', [['Results & Performance']]) + `<div class="container page-body">${mineHTML}
       <div class="grid g2 mt32"><div class="card"><div class="card-hd"><h3>${icon('trophy', 17)} Test leaderboard</h3>${tests.length ? `<select class="select" style="width:auto;height:36px" data-act-change="lb-test">${tests.map(t => `<option value="${h(t.id)}" ${t.id === sel ? 'selected' : ''}>${h(t.title)}</option>`).join('')}</select>` : ''}</div>${sel ? leaderTable(((rankFor(sel, '__') || { list: [] }).list.length ? (rankFor(sel, '__')).list : leaderboardFirst(sel)).map(a => ({ ...a, p: a.max ? a.score / a.max : 0 })), 'marks') : '<p class="muted small card-pad">Leaderboards appear after the first test attempts.</p>'}</div>
@@ -188,12 +196,12 @@ function testCard(t) {
 
 /* ===== Quiz engine ===== */
 const QuizEngine = {
-  start(id) {
-    const qz = byId('quizzes', id); if (!qz) return;
+  start(id, obj) {
+    const qz = obj || byId('quizzes', id); if (!qz) return;
     clearInterval(QZ.timer);
     const qs = qz.randomize !== false ? shuffle(qz.questions || []) : (qz.questions || []).slice();
     const optOrder = {}; qs.forEach(q => optOrder[q.id] = qz.randomize !== false ? shuffle(q.options.map((_, i) => i)) : q.options.map((_, i) => i));
-    QZ.run = { quizId: id, qs, optOrder, cur: 0, answers: {}, startAt: Date.now(), end: Date.now() + (+qz.duration || 10) * 60000 };
+    QZ.run = { quizId: id, quiz: qz, qs, optOrder, cur: 0, answers: {}, startAt: Date.now(), end: Date.now() + (+qz.duration || 10) * 60000 };
     QZ.timer = setInterval(() => QuizEngine.tick(), 1000);
     if (location.hash !== '#quiz-' + id) location.hash = 'quiz-' + id; else App.render();
     window.scrollTo({ top: 0 });
@@ -212,8 +220,8 @@ const QuizEngine = {
     const run = QZ.run; if (!run || run.result) return;
     if (!force) { const un = run.qs.filter(q => !(run.answers[q.id] || []).length).length; if (!(await confirmBox('Submit quiz?', un ? `You have ${un} unanswered question${un > 1 ? 's' : ''}. Submit anyway?` : 'You have answered every question. Ready to see your score?', 'Submit'))) return; }
     clearInterval(QZ.timer);
-    const qz = byId('quizzes', run.quizId); const ev = evaluate(run.qs, run.answers, 1, 0);
-    const attempt = { id: genId(), kind: 'quiz', refId: run.quizId, title: qz.title, subject: qz.subject, ...ev, time: Math.min((Date.now() - run.startAt) / 1000, (+qz.duration || 10) * 60) | 0, at: nowISO(), answers: run.answers };
+    const qz = run.quiz; const ev = evaluate(run.qs, run.answers, 1, 0); const isPr = qz.kind === 'Practice';
+    const attempt = { id: genId(), kind: isPr ? 'practice' : 'quiz', ...(isPr ? { qids: run.qs.map(q => q.id) } : {}), refId: run.quizId, title: qz.title, subject: qz.subject, ...ev, time: Math.min((Date.now() - run.startAt) / 1000, (+qz.duration || 10) * 60) | 0, at: nowISO(), answers: run.answers };
     run.result = attempt; App.render(); window.scrollTo({ top: 0, behavior: 'smooth' });
     if (isRegistered()) updateMyResult(r => { r.attempts = (r.attempts || []).concat([attempt]); return r; });
   },

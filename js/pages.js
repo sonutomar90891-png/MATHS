@@ -48,7 +48,7 @@ const Pages = {
     <section class="section alt"><div class="container">
       <div class="sec-head reveal"><div><div class="eyebrow">Quiz & Practice</div><h2>Practice a little every day</h2><p>Timed quizzes with instant scoring, explanations and a leaderboard.</p></div><div class="chips">${kinds.map(k => `<button class="chip ${F.homeQuiz === k ? 'active' : ''}" data-act="home-quiz" data-v="${k}">${k}</button>`).join('')}</div></div>
       ${!ready('quizzes') ? skeletonGrid(3) : quizzes.length ? `<div class="grid g3">${quizzes.map(q => `<div class="reveal in">${quizCard(q)}</div>`).join('')}</div>` : emptyState('quiz', 'No quizzes in this category', 'Try another category or check back soon.')}
-      <div class="center mt32"><a href="#quizzes" class="btn btn-ghost">See all quizzes ${icon('arrow', 15)}</a></div>
+      <div class="center mt32 flex wrap" style="justify-content:center"><a href="#practice" class="btn btn-gold">${icon('sparkle', 15)} Create your own practice test</a><a href="#quizzes" class="btn btn-ghost">See all quizzes ${icon('arrow', 15)}</a></div>
     </div></section>
 
     <section class="section"><div class="container">

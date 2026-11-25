@@ -40,6 +40,7 @@ const S = {
   mode: 'loading', db: null, user: null, assets: null, downloads: null,
   uid: null, isAdmin: false, isOwner: false, readOnly: false, accountName: '',
   data: {}, loaded: {}, results: [], subsAll: [], fbAll: [],
+  bank: [], bankSub: false,
   mySub: null, myFb: null, myState: null, stateLoaded: false, error: '',
 };
 CONTENT.concat(['settings']).forEach(c => S.data[c] = []);

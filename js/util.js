@@ -270,7 +270,8 @@ function rowsToQuestions(rows) {
     const answer = ansRaw.split(/[;,|\s]+/).filter(Boolean).map(a => /^\d+$/.test(a) ? +a - 1 : a.toUpperCase().charCodeAt(0) - 65).filter(i => i >= 0 && i < options.length);
     const type = (hasHead ? g('type') : String(r[1] ?? '')).toLowerCase().startsWith('m') || answer.length > 1 ? 'multi' : 'single';
     if (options.length < 2 || !answer.length) continue;
-    out.push({ id: genId(), text, type, options, answer, explanation: hasHead ? g('explanation') : String(r[7] ?? '').trim() });
+    const dRaw = hasHead ? g('difficulty').toLowerCase() : ''; const difficulty = /^e/.test(dRaw) ? 'Easy' : /^(m|med)/.test(dRaw) ? 'Moderate' : /^(d|h)/.test(dRaw) ? 'Difficult' : '';
+    out.push({ id: genId(), text, type, options, answer, explanation: hasHead ? g('explanation') : String(r[7] ?? '').trim(), chapter: hasHead ? g('chapter') : '', topic: hasHead ? g('topic') : '', difficulty, cls: hasHead ? g('class') : '' });
   }
   return out;
 }
